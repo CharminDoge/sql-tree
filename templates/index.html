@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>sql-tree</title>
+
+        <style>
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
+            #container {
+                width: 100%;
+                height: 100vh;
+                display: grid;
+                grid-template-columns: 2;
+                grid-template-rows: 2;
+            }
+            
+            .box {
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+            #query-cell {
+                padding: 10px;
+                grid-column: 1;
+                grid-row: 1;
+                border-bottom: 2px solid turquoise;
+                border-right: 2px solid turquoise;
+            }
+
+            #result-cell {
+                padding: 10px;
+                grid-column: 1;
+                grid-row: 2;
+                border-top: 2px solid turquoise;
+                border-right: 2px solid turquoise;
+            }
+
+            #tree-cell {
+                padding: 10px;
+                grid-column: 2;
+                grid-row: 1 / 3;
+                border-left: 2px solid turquoise;
+            }
+        </style>
+</head>
+
+<body>
+    <div id="container">
+        <div class="box" id="query-cell">
+            <form id="queryForm">
+                <label for="query">
+                    <h2>Query:</h2>
+                </label>
+                <textarea id="query" class="box" style="width: 100%; padding: 10px; resize: none; font-size: large;" autofocus form="queryForm" name="query"></textarea>
+                <button id="sendQuery" type="submit">Senda</button>
+            </form>
+        </div>
+        <div class="box" id="result-cell">
+            <h2>Executed query:</h2>
+            <p id="queryResult">risultato</p>
+        </div>
+    
+        <div class="box" id="tree-cell">
+            asd1
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener("load", () => {
+            function sendQuery() {
+                const XHR = new XMLHttpRequest();
+
+                // Bind the FormData object and the form element
+                const FD = new FormData(form);
+
+                // Define what happens on successful data submission
+                XHR.addEventListener("load", (event) => {
+                    const responseText = event.target.responseText; // Get the response text
+                    const queryResult = document.getElementById("queryResult"); // Get the div element
+
+                    // Set the innerHTML of the div to the response text
+                    queryResult.innerHTML = responseText;
+                });
+
+                // Define what happens in case of error
+                XHR.addEventListener("error", (event) => {
+                    const responseText = "general error"; // Get the response text
+                    const queryResult = document.getElementById("queryResult"); // Get the div element
+
+                    // Set the innerHTML of the div to the response text
+                    queryResult.innerHTML = responseText;
+                });
+
+                // Set up our request
+                XHR.open("POST", "/query");
+
+                // The data sent is what the user provided in the form
+                XHR.send(FD);
+            }
+
+            // Get the form element
+            const form = document.getElementById("queryForm");
+
+            // Add 'submit' event handler
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+
+                sendQuery();
+            });
+        });
+    </script>
+</body>
